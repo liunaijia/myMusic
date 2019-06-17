@@ -69,29 +69,42 @@ async function readFileAsJson(filename) {
 async function parseTracksFromMusic163() {
   const data = await readFileAsJson(path.join(__dirname, './playlist_music163.json'));
   const tracks = data.map(track => ({
-    name: track.name,
-    author: track.ar.map(({ name }) => name).join(' '),
-    album: {
-      name: track.al.name,
-      picture: track.al.picUrl,
-    },
+    title: track.name,
+    artist: track.ar.map(({ name }) => name).join(' '),
+    album: track.al.name,
   }));
   return tracks;
+}
+
+async function parseTracksFromXiamiPage(page) {
+  const data = await readFileAsJson(path.join(__dirname, `./playlist_xiami_p${page}.json`));
+  const tracks = data.result.data.songs.map(track => ({
+    title: track.songName,
+    artist: track.singers,
+    album: track.albumName,
+  }));
+  return tracks;
+}
+
+async function parseTracksFromXiami() {
+  return (await parseTracksFromXiamiPage(1))
+    .concat(await parseTracksFromXiamiPage(2))
+    .concat(await parseTracksFromXiamiPage(3));
 }
 
 async function downloadMetadata(track) {
   const folder = path.join(__dirname, '../metadata');
   const existingFiles = await fs.promises.readdir(folder);
-  const filename = `${track.name} - ${track.author}.json`;
+  const filename = `${track.title} - ${track.artist}.json`;
   const isExisting = existingFiles.includes(filename);
   if (isExisting) {
     return JSON.parse(await fs.promises.readFile(path.join(folder, filename), { encoding: 'utf-8' }));
   }
 
-  console.log(`Search ${track.name} ${track.author}`);
+  console.log(`Search ${track.title} ${track.artist} ${track.album}`);
 
   const response = await post('http://music.ifkdy.com/', {
-    input: `${track.name} ${track.author}`,
+    input: `${track.title} ${track.artist} ${track.album}`,
     filter: 'name',
     type: 'qq',
     page: 1,
@@ -105,13 +118,13 @@ async function downloadMetadata(track) {
 async function downloadSong(track, metadata) {
   const folder = path.join(__dirname, '../songs');
   const existingFiles = await fs.promises.readdir(folder);
-  const filename = path.join(folder, `${track.name} - ${track.author}.mp3`);
+  const filename = path.join(folder, `${track.title} - ${track.artist}.mp3`);
   const isExisting = existingFiles.includes(path.basename(filename));
   if (isExisting) {
     return filename;
   }
 
-  console.log(`Download ${track.name} ${track.author}`);
+  console.log(`Download ${track.title} ${track.artist}`);
 
   try {
     const { url } = metadata.find(m => m.url);
@@ -132,7 +145,7 @@ async function downloadSong(track, metadata) {
 }
 
 async function fixMp3Tags(track, metadata, filename) {
-  const expectedTags = { title: track.name, artist: track.author, album: track.album.name };
+  const expectedTags = { title: track.title, artist: track.artist, album: track.album };
 
   const { pic: picUrl } = metadata.find(m => m.pic);
   if (picUrl) {
@@ -164,25 +177,29 @@ async function fixMp3Tags(track, metadata, filename) {
   }
 }
 
-async function* uniqTracks(tracks) {
+function* uniqTracks(tracks) {
   const handledTracks = [];
-  for await (const track of tracks) {
-    if (!handledTracks.some(handled => handled.name.toUpperCase() === track.name.toUpperCase()
-     && handled.author.toUpperCase() === track.author.toUpperCase())) {
+  for (const track of tracks) {
+    if (!handledTracks.some(handled => handled.title.toUpperCase() === track.title.toUpperCase()
+     && handled.artist.toUpperCase() === track.artist.toUpperCase())) {
       yield track;
     }
-    handledTracks.push({ name: track.name, author: track.author });
+    handledTracks.push({ title: track.title, artist: track.artist });
   }
 }
 
 async function run() {
-  const tracks = await parseTracksFromMusic163();
-  for await (const track of uniqTracks(tracks)) {
-    const metadata = await downloadMetadata(track);
-    const filename = await downloadSong(track, metadata);
-    await fixMp3Tags(track, metadata, filename);
-  }
-  // console.log(handledTracks);
+  const tracks = [...await parseTracksFromMusic163(), ...await parseTracksFromXiami()];
+  Promise.all(Array.from(uniqTracks(tracks))
+    .map(async (track) => {
+      const metadata = await downloadMetadata(track);
+      if (metadata) {
+        const filename = await downloadSong(track, metadata);
+        await fixMp3Tags(track, metadata, filename);
+      } else {
+        console.log(`Cannot find ${track.title} ${track.artist} ${track.album}`);
+      }
+    }));
 }
 
 // const f = '/Users/naijialiu/myProjects/stock-eye/src/puzzles/myMusic/songs/凡人歌 - 李宗盛.mp3';
@@ -234,7 +251,7 @@ run();
 //       await fs.promises.writeFile(`${__dirname}/metadata/${songName}.json`, JSON.stringify(data.data));
 
 //       // const {
-//       //   author, songid, title, url,
+//       //   artist, songid, title, url,
 //       // } = data.data[0];
 //       // console.log(url);
 //     }
@@ -267,7 +284,7 @@ run();
 //     if (!songFiles.some(songFile => songFile.startsWith(mainName))) {
 //       const metadata = JSON.parse(await fs.promises.readFile(path.join(metadataFolder, metadataFile), { encoding: 'utf-8' }))
 //         .find(({ url }) => url);
-//       const { url: songUrl, title, author: artist } = metadata;
+//       const { url: songUrl, title, artist: artist } = metadata;
 //       console.log(`Downloading ${mainName}\n${songUrl}`);
 //       const response = await get(songUrl);
 //       // console.log(response);
