@@ -68,7 +68,7 @@ async function readFileAsJson(filename) {
 
 async function parseTracksFromMusic163() {
   const data = await readFileAsJson(path.join(__dirname, './playlist_music163.json'));
-  const tracks = data.playlist.tracks.map(track => ({
+  const tracks = data.map(track => ({
     name: track.name,
     author: track.ar.map(({ name }) => name).join(' '),
     album: {
@@ -80,7 +80,7 @@ async function parseTracksFromMusic163() {
 }
 
 async function downloadMetadata(track) {
-  const folder = path.join(__dirname, './metadata');
+  const folder = path.join(__dirname, '../metadata');
   const existingFiles = await fs.promises.readdir(folder);
   const filename = `${track.name} - ${track.author}.json`;
   const isExisting = existingFiles.includes(filename);
@@ -103,7 +103,7 @@ async function downloadMetadata(track) {
 }
 
 async function downloadSong(track, metadata) {
-  const folder = path.join(__dirname, './songs');
+  const folder = path.join(__dirname, '../songs');
   const existingFiles = await fs.promises.readdir(folder);
   const filename = path.join(folder, `${track.name} - ${track.author}.mp3`);
   const isExisting = existingFiles.includes(path.basename(filename));
