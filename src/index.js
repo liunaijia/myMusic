@@ -76,6 +76,16 @@ async function parseTracksFromMusic163() {
   return tracks;
 }
 
+async function parseTracksFromDouban() {
+  const data = await readFileAsJson(path.join(__dirname, './playlist_douban.json'));
+  const tracks = data.map(track => ({
+    title: track.title,
+    artist: track.artist,
+    album: track.albumtitle,
+  }));
+  return tracks;
+}
+
 async function parseTracksFromXiamiPage(page) {
   const data = await readFileAsJson(path.join(__dirname, `./playlist_xiami_p${page}.json`));
   const tracks = data.result.data.songs.map(track => ({
@@ -92,10 +102,14 @@ async function parseTracksFromXiami() {
     .concat(await parseTracksFromXiamiPage(3));
 }
 
+function sanitiseFilename(filename) {
+  return filename.replace(/[/?<>\\:*|"]/, '');
+}
+
 async function downloadMetadata(track) {
   const folder = path.join(__dirname, '../metadata');
   const existingFiles = await fs.promises.readdir(folder);
-  const filename = `${track.title} - ${track.artist}.json`;
+  const filename = sanitiseFilename(`${track.title} - ${track.artist}.json`);
   const isExisting = existingFiles.includes(filename);
   if (isExisting) {
     return JSON.parse(await fs.promises.readFile(path.join(folder, filename), { encoding: 'utf-8' }));
@@ -118,7 +132,7 @@ async function downloadMetadata(track) {
 async function downloadSong(track, metadata) {
   const folder = path.join(__dirname, '../songs');
   const existingFiles = await fs.promises.readdir(folder);
-  const filename = path.join(folder, `${track.title} - ${track.artist}.mp3`);
+  const filename = path.join(folder, sanitiseFilename(`${track.title} - ${track.artist}.mp3`));
   const isExisting = existingFiles.includes(path.basename(filename));
   if (isExisting) {
     return filename;
@@ -189,7 +203,8 @@ function* uniqTracks(tracks) {
 }
 
 async function run() {
-  const tracks = [...await parseTracksFromMusic163(), ...await parseTracksFromXiami()];
+  const tracks = [...await parseTracksFromMusic163(), ...await parseTracksFromXiami(),
+    ...await parseTracksFromDouban()];
   Promise.all(Array.from(uniqTracks(tracks))
     .map(async (track) => {
       const metadata = await downloadMetadata(track);
