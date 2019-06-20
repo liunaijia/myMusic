@@ -7,6 +7,8 @@ const path = require('path');
 const { request } = require('http');
 const querystring = require('querystring');
 const NodeID3 = require('node-id3');
+const music163Request = require('NeteaseCloudMusicApi/util/request');
+const search = require('NeteaseCloudMusicApi/module/search');
 
 async function post(url, data) {
   // console.log(querystring.stringify(data));
@@ -64,42 +66,6 @@ async function readAsJson(response) {
 async function readFileAsJson(filename) {
   const content = await fs.promises.readFile(filename, { encoding: 'utf-8' });
   return JSON.parse(content);
-}
-
-async function parseTracksFromMusic163() {
-  const data = await readFileAsJson(path.join(__dirname, './playlist_music163.json'));
-  const tracks = data.map(track => ({
-    title: track.name,
-    artist: track.ar.map(({ name }) => name).join(' '),
-    album: track.al.name,
-  }));
-  return tracks;
-}
-
-async function parseTracksFromDouban() {
-  const data = await readFileAsJson(path.join(__dirname, './playlist_douban.json'));
-  const tracks = data.map(track => ({
-    title: track.title,
-    artist: track.artist,
-    album: track.albumtitle,
-  }));
-  return tracks;
-}
-
-async function parseTracksFromXiamiPage(page) {
-  const data = await readFileAsJson(path.join(__dirname, `./playlist_xiami_p${page}.json`));
-  const tracks = data.result.data.songs.map(track => ({
-    title: track.songName,
-    artist: track.singers,
-    album: track.albumName,
-  }));
-  return tracks;
-}
-
-async function parseTracksFromXiami() {
-  return (await parseTracksFromXiamiPage(1))
-    .concat(await parseTracksFromXiamiPage(2))
-    .concat(await parseTracksFromXiamiPage(3));
 }
 
 function sanitiseFilename(filename) {
@@ -203,8 +169,7 @@ function* uniqTracks(tracks) {
 }
 
 async function run() {
-  const tracks = [...await parseTracksFromMusic163(), ...await parseTracksFromXiami(),
-    ...await parseTracksFromDouban()];
+  const tracks = await readFileAsJson(path.join(__dirname, './seed.json'));
   Promise.all(Array.from(uniqTracks(tracks))
     .map(async (track) => {
       const metadata = await downloadMetadata(track);
@@ -216,6 +181,15 @@ async function run() {
       }
     }));
 }
+
+run();
+
+// async function test() {
+//   const data = await search({ keywords: '山丘' }, music163Request);
+//   console.log(data);
+// }
+
+// test();
 
 // const f = '/Users/naijialiu/myProjects/stock-eye/src/puzzles/myMusic/songs/凡人歌 - 李宗盛.mp3';
 // console.log(NodeID3.read(f));
@@ -231,7 +205,6 @@ async function run() {
 // }
 
 // downloadCover();
-run();
 
 // async function processLineByLine() {
 //   const fileStream = fs.createReadStream(`${__dirname}/playlist`);
