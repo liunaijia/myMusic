@@ -1,0 +1,44 @@
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: nodejs10.x
+    Handler: index.default # export handler function as default from index.js file
+    Timeout: 30 # 30 seconds, default is 3
+    Environment:
+      Variables:
+        # MyMusicTable: !Ref MyMusicTable
+    # user default here?
+
+Resources:
+  NeteaseCloudMusicApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .aws-sam/build/neteaseCloudMusicApi
+      Events:
+        Api: # API name
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+  # MyMusicTable:
+  #   Type: AWS::DynamoDB::Table
+  #   Properties:
+  #     AttributeDefinitions:
+  #       -
+  #         AttributeName: day
+  #         AttributeType: S
+  #       -
+  #         AttributeName: stockCode
+  #         AttributeType: S
+  #     KeySchema:
+  #       -
+  #         AttributeName: stockCode
+  #         KeyType: HASH
+  #       -
+  #         AttributeName: day
+  #         KeyType: RANGE
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 1
+  #       WriteCapacityUnits: 1
