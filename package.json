@@ -1,5 +1,5 @@
 {
-  "name": "mymusic",
+  "name": "my-music",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,8 @@
     "deploy:api": "run-s deploy:api:clean-build deploy:api:build deploy:api:upload-package deploy:api:deploy-stack",
     "deploy:api:clean-build": "rm -rf ./.aws-sam",
     "deploy:api:build": "webpack --config webpack-app.config.js --mode production",
-    "deploy:api:upload-package": "sam package --output-template-file ./.aws-sam/template.yaml --s3-bucket stockeye --s3-prefix packages",
-    "deploy:api:deploy-stack": "sam deploy --template-file ./.aws-sam/template.yaml --stack-name stockeye --capabilities CAPABILITY_IAM"
+    "deploy:api:upload-package": "sam package --output-template-file ./.aws-sam/template.yaml --s3-bucket naijia-my-music --s3-prefix packages",
+    "deploy:api:deploy-stack": "sam deploy --template-file ./.aws-sam/template.yaml --stack-name myMusic --capabilities CAPABILITY_IAM"
   },
   "repository": {
     "type": "git",

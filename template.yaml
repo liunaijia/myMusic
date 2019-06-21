@@ -5,8 +5,8 @@ Globals:
     Runtime: nodejs10.x
     Handler: index.default # export handler function as default from index.js file
     Timeout: 30 # 30 seconds, default is 3
-    Environment:
-      Variables:
+    # Environment:
+      # Variables:
         # MyMusicTable: !Ref MyMusicTable
     # user default here?
 
