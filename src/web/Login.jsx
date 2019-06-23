@@ -12,8 +12,8 @@ function Login() {
 
   const [formValue, handleFormChange] = useForm({ email: 'me@gmail.com' });
 
-  function login() {
-    console.log('login', formValue);
+  async function login() {
+    await user.dispatch.login(formValue.email, formValue.password);
   }
 
   return (

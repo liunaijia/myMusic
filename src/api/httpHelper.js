@@ -1,6 +1,8 @@
 function createHeaders(headers) {
   const defaultHeaders = {
     'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
   };
   const allHeaders = Object.assign({}, defaultHeaders, headers);
   const singleValueHeaders = {};
@@ -20,6 +22,15 @@ function createHeaders(headers) {
 
 export function respond(fn) {
   return async function decorator(event, context, callback) {
+    if (event.httpMethod === 'OPTIONS') {
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify(event),
+        ...createHeaders(),
+      });
+      return;
+    }
+
     try {
       const { status, body, cookie } = await fn.apply(this, [event, context, callback]);
       callback(null, {
