@@ -9,24 +9,21 @@ function Login() {
     return (<Redirect to="/" />);
   }
 
-  const [state, setState] = useState({});
+  const [formValue, setFormValue] = useState({ email: 'me@gmail.com' });
 
-  function handleChange(field) {
-    return (event) => {
-      // it sets everything which is wrong
-      setState({ [field]: event.target.value });
-    };
+  function handleFormChange(event) {
+    setFormValue(event.target.value);
   }
 
   function login() {
-    console.log('login', state);
-    // user.dispatch.login();
+    console.log('login', formValue);
   }
+
 
   return (
     <>
       <h1>Log In</h1>
-      <Form initialValue={{ email: 'me@gmail.com' }}>
+      <Form value={formValue} onChange={handleFormChange}>
         <EmailInput name="email" />
         <PasswordInput name="password" />
       </Form>

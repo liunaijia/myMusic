@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
-import { node, instanceOf } from 'prop-types';
+import React from 'react';
+import { node, instanceOf, func } from 'prop-types';
 
-function Form({ initialValue, children }) {
-  const [state, setState] = useState(initialValue);
-
+function Form({ value, onChange, children }) {
   function handleChange(name) {
     return (event) => {
-      setState({
-        ...state,
-        [name]: event.target.value,
-      });
+      if (onChange) {
+        onChange({
+          target: {
+            value: {
+              ...value,
+              [name]: event.target.value,
+            },
+          },
+        });
+      }
     };
   }
 
   return React.Children.map(children, (child) => {
     const { name } = child.props;
     return React.cloneElement(child, {
-      value: state[name],
+      value: value[name],
       onChange: handleChange(name),
     });
   });
@@ -24,12 +28,14 @@ function Form({ initialValue, children }) {
 
 Form.propTypes = {
   children: node,
-  initialValue: instanceOf(Object),
+  value: instanceOf(Object),
+  onChange: func,
 };
 
 Form.defaultProps = {
   children: null,
-  initialValue: {},
+  value: {},
+  onChange: null,
 };
 
 export default Form;
