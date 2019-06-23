@@ -1,24 +1,26 @@
 import React from 'react';
-import { node } from 'prop-types';
+import { node, string } from 'prop-types';
 
 function Input({
-  label, ...inputProps
+  label, value, ...inputProps
 }) {
   return (
     // eslint-disable-next-line jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for
     <label>
       {label}
-      <input {...inputProps} />
+      <input value={value} {...inputProps} />
     </label>
   );
 }
 
 Input.propTypes = {
   label: node,
+  value: string,
 };
 
 Input.defaultProps = {
-  label: '',
+  label: null,
+  value: '',
 };
 
 export default Input;
