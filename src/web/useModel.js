@@ -21,13 +21,13 @@ function useModel(model) {
       [effectName]: effectHandler,
     }), {});
 
-  return [
-    reducerState,
+  return {
+    state: reducerState,
 
     // extend dispatch function
-    Object.assign(dispatch, mapReducers, mapEffects),
-
-  ];
+    dispatch: Object.assign(dispatch, mapReducers, mapEffects),
+    selectors: model.selectors(reducerState),
+  };
 }
 
 export default useModel;

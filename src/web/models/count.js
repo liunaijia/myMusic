@@ -14,4 +14,7 @@ export default {
       dispatch.increment(payload);
     },
   }),
+  selectors: (state) => {
+
+  },
 };
