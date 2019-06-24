@@ -17,7 +17,9 @@ export default respond(async (event) => {
     const query = Object.assign({},
       event.queryStringParameters,
       JSON.parse(event.body),
-      { cookie: parseCookie(event.headers.Cookie) });
+      {
+        cookie: Object.assign({}, parseCookie(event.headers.Cookie), parseCookie(event.headers['X-Cookie'])),
+      });
     return handler(query, request);
   }
   return { body: event };

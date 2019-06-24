@@ -16,10 +16,13 @@ export default {
     },
   },
   effects: dispatch => ({
-    // handle state changes with impure functions.
-    // use async/await for async actions
     async login(email, password) {
       const response = await axios.post('/login', { email, password });
+      dispatch.setUser(response.data);
+    },
+
+    async loginStatus() {
+      const response = await axios.get('/login/status');
       dispatch.setUser(response.data);
     },
   }),
@@ -27,6 +30,10 @@ export default {
     isLoggedIn() {
       console.log('isLoggedIn', state.profile);
       return state.profile !== null;
+    },
+
+    profile() {
+      return state.profile;
     },
   }),
 };

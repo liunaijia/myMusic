@@ -1,8 +1,11 @@
 function createHeaders(headers) {
   const defaultHeaders = {
     'Access-Control-Allow-Origin': '*',
+    // 'Access-Control-Allow-Origin': 'http://localhost:8080',
+    // 'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+    'Access-Control-Allow-Headers': 'X-Cookie,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+    'Access-Control-Expose-Headers': 'X-Set-Cookie',
   };
   const allHeaders = Object.assign({}, defaultHeaders, headers);
   const singleValueHeaders = {};
@@ -18,6 +21,10 @@ function createHeaders(headers) {
     headers: singleValueHeaders,
     multiValueHeaders,
   };
+}
+
+function setCookieHeader(cookie) {
+  return { 'X-Set-Cookie': JSON.stringify(cookie) };
 }
 
 export function respond(fn) {
@@ -36,7 +43,7 @@ export function respond(fn) {
       callback(null, {
         statusCode: status || 200,
         body: JSON.stringify(body),
-        ...createHeaders({ 'Set-Cookie': cookie }),
+        ...createHeaders(setCookieHeader(cookie)),
       });
     } catch (error) {
       const { status, body, cookie } = error;
@@ -46,7 +53,7 @@ export function respond(fn) {
           Error: error.message || error,
           Reference: context.awsRequestId,
         }),
-        ...createHeaders({ 'Set-Cookie': cookie }),
+        ...createHeaders(setCookieHeader(cookie)),
       });
     }
   };

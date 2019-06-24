@@ -3,21 +3,17 @@ import { Redirect } from 'react-router-dom';
 import { StoreContext } from './context';
 
 function Home() {
-  const { count, user } = useContext(StoreContext);
+  const { user } = useContext(StoreContext);
   if (!user.selectors.isLoggedIn()) {
     return (<Redirect to="/login" />);
   }
+  const profile = user.selectors.profile();
 
   return (
     <main>
-      Count:
-      {count.state}
-      <button onClick={() => count.dispatch({ type: 'increment', payload: 2 })}>Inc</button>
-      <button onClick={() => count.dispatch.increment(3)}>+3</button>
-      <button onClick={() => count.dispatch.incrementAsync(3)}>+3 async</button>
-      <h1>Nothing yet.</h1>
-      Status:
-      {user.selectors.isLoggedIn() ? 'yes' : 'no'}
+      {profile.userId}
+      {profile.nickname}
+      <img src={profile.avatarUrl} alt="avatar" />
     </main>
   );
 }
