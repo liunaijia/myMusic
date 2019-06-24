@@ -16,7 +16,7 @@
     "lint:eslint": "eslint --ext .js --ext .jsx src",
     "test": "jest",
     "deploy:web:build": "webpack --config webpack-web.config.js --mode production",
-    "dev:web": "webpack-dev-server --config webpack-web.config.js --mode development"
+    "dev:web": "webpack-dev-server --config webpack-web.config.js --mode development --hot"
   },
   "repository": {
     "type": "git",

@@ -33,7 +33,6 @@ module.exports = createConfig((env, argv) => {
         },
       },
     });
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
   }
   return config;
 });
