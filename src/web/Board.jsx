@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar } from './components';
 
-function Components() {
+function Board() {
   return (
     <>
       <Avatar src="https://66.media.tumblr.com/78d9f5cc68beb1e6d49fc8a0bfa375ce/tumblr_pszj0804ub1qf8em3o3_1280.jpg" />
@@ -14,4 +14,4 @@ function Components() {
   );
 }
 
-export default Components;
+export default Board;

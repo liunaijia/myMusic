@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 function Avatar({ className }) {
   return (
-    <img className={className} alt="" />
+    <span className={className} />
   );
 }
 
@@ -17,6 +17,7 @@ Avatar.defaultProps = {
 };
 
 export default styled(Avatar)`
+  display: inline-block;
   height: 64px;
   width: 64px;
   background-size: cover;
