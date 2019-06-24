@@ -1,19 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { StoreContext } from './context';
 import { EmailInput, PasswordInput, Form } from './components';
 import useForm from './useForm';
 
 function Login() {
-  const { user } = useContext(StoreContext);
-  if (user.selectors.isLoggedIn()) {
+  const { login } = useContext(StoreContext);
+  const [state, setState] = useState('show_form');
+
+  useEffect(() => {
+    (async () => {
+      if (login.selectors.hasSessionInCookie()) {
+        try {
+          setState('fetching_status');
+          await login.dispatch.status();
+        } catch (_) {
+          // fail to fetch login status, need to login
+          setState('show_form');
+        }
+      }
+    })();
+  }, []);
+
+  const [formValue, handleFormChange] = useForm();
+
+  async function handleSubmit() {
+    await login.dispatch.login(formValue.email, formValue.password);
+  }
+
+  // redirect to home page after log in
+  if (login.selectors.isLoggedIn()) {
     return (<Redirect to="/" />);
   }
 
-  const [formValue, handleFormChange] = useForm({ email: 'me@gmail.com' });
-
-  async function login() {
-    await user.dispatch.login(formValue.email, formValue.password);
+  if (state === 'fetching_status') {
+    return 'Fetch log in status...';
   }
 
   return (
@@ -22,8 +43,8 @@ function Login() {
       <Form value={formValue} onChange={handleFormChange}>
         <EmailInput name="email" />
         <PasswordInput name="password" />
+        <input type="submit" onClick={handleSubmit} />
       </Form>
-      <input type="submit" onClick={login} />
     </>
   );
 }

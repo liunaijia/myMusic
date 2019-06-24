@@ -21,12 +21,16 @@ export default {
       dispatch.setUser(response.data);
     },
 
-    async loginStatus() {
+    async status() {
       const response = await axios.get('/login/status');
       dispatch.setUser(response.data);
     },
   }),
   selectors: state => ({
+    hasSessionInCookie() {
+      return document.cookie;
+    },
+
     isLoggedIn() {
       console.log('isLoggedIn', state.profile);
       return state.profile !== null;

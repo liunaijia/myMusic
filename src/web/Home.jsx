@@ -1,19 +1,20 @@
 import React, { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { StoreContext } from './context';
+import { Avatar } from './components';
 
 function Home() {
-  const { user } = useContext(StoreContext);
-  if (!user.selectors.isLoggedIn()) {
+  const { login } = useContext(StoreContext);
+  if (!login.selectors.isLoggedIn()) {
     return (<Redirect to="/login" />);
   }
-  const profile = user.selectors.profile();
+  const profile = login.selectors.profile();
 
   return (
     <main>
       {profile.userId}
       {profile.nickname}
-      <img src={profile.avatarUrl} alt="avatar" />
+      <Avatar src={profile.avatarUrl} />
     </main>
   );
 }
