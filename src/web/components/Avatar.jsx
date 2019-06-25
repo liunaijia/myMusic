@@ -1,27 +1,35 @@
 import React from 'react';
-import { string } from 'prop-types';
+import { string, oneOf } from 'prop-types';
 import styled from 'styled-components';
 
-function Avatar({ className }) {
+function Avatar({ src, className }) {
   return (
-    <span className={className} />
+    <span className={className} style={{ '--background-image': `url(${src})` }} />
   );
 }
 
 Avatar.propTypes = {
+  src: string,
   className: string,
+  shape: oneOf(['circle', 'square']),
 };
 
 Avatar.defaultProps = {
+  src: '',
   className: '',
+  shape: 'circle',
 };
 
+// use css variable to reduce css classes generated
 export default styled(Avatar)`
   display: inline-block;
   height: 64px;
   width: 64px;
   background-size: cover;
   background-position: center;
-  border-radius: 50%;
-  background-image: url(${props => props.src});
+  background-image: var(--background-image);
+  ${props => props.shape !== 'square' // it doesn't honer prop default value, can't use shape === 'circle'
+  && `
+    border-radius: 50%;
+  `}
 `;

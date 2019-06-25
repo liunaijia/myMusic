@@ -11,19 +11,19 @@ export default {
     // increment(state, payload) {
     //   return state + payload;
     // },
-    setUser(state, payload) {
+    set(state, payload) {
       return Object.assign({}, state, payload);
     },
   },
   effects: dispatch => ({
     async login(email, password) {
       const response = await axios.post('/login', { email, password });
-      dispatch.setUser(response.data);
+      dispatch.set(response.data);
     },
 
     async status() {
       const response = await axios.get('/login/status');
-      dispatch.setUser(response.data);
+      dispatch.set(response.data);
     },
   }),
   selectors: state => ({
