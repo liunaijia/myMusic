@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from './Input';
 
-function PasswordInput({ ...props }) {
+function PasswordInput(props) {
   return (
     <Input type="password" label="Password" autoComplete="current-password" {...props} />
   );
