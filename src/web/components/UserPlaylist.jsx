@@ -1,28 +1,27 @@
-import React, { useContext, useEffect } from 'react';
-import { number } from 'prop-types';
+import React from 'react';
+import { number, string } from 'prop-types';
 import styled from 'styled-components';
-import { StoreContext } from '../context';
 import Playlist from './Playlist';
+import useUserPlaylist from './useUserPlaylist';
 
 function UserPlaylist({ className, userId }) {
-  const { user } = useContext(StoreContext);
+  const playlist = useUserPlaylist(userId);
 
-  useEffect(() => {
-    if (userId) {
-      user.dispatch.getPlaylist(userId);
-    }
-  }, [userId]);
-
-  const playlist = user.selectors.playlist();
-  return playlist.map(item => <Playlist key={item.id} id={item.id} name={item.name} />);
+  return (
+    <div className={className}>
+      {playlist.map(item => <Playlist key={item.id} id={item.id} name={item.name} />)}
+    </div>
+  );
 }
 
 UserPlaylist.propTypes = {
   userId: number,
+  className: string,
 };
 
 UserPlaylist.defaultProps = {
   userId: null,
+  className: null,
 };
 
 export default styled(UserPlaylist)`
