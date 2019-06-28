@@ -4,6 +4,12 @@ import { Avatar, Track } from './components';
 function Board() {
   return (
     <>
+      <h2>Colors</h2>
+      <ul>
+        <li style={{ color: 'var(--primary-color)' }}>Primary Color</li>
+        <li style={{ color: 'var(--secondary-color)' }}>Secondary Color</li>
+      </ul>
+
       <h2>Avatar</h2>
       <Avatar src="https://66.media.tumblr.com/78d9f5cc68beb1e6d49fc8a0bfa375ce/tumblr_pszj0804ub1qf8em3o3_1280.jpg" />
       <Avatar src="https://66.media.tumblr.com/68b823d03f44417adaf7380a7814c07e/tumblr_pszj0804ub1qf8em3o8_1280.jpg" />

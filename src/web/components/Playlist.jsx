@@ -51,7 +51,7 @@ export default styled(Playlist)`
     padding: 0;
 
     > li + li {
-      margin-top: 1rem;
+      margin-top: var(--size-1);
     }
   }
 `;

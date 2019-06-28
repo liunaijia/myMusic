@@ -23,8 +23,8 @@ Avatar.defaultProps = {
 // use css variable to reduce css classes generated
 export default styled(Avatar)`
   display: inline-block;
-  height: 64px;
-  width: 64px;
+  height: var(--size-3);
+  width: var(--size-3);
   background-size: cover;
   background-position: center;
   background-image: var(--background-image);

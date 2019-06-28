@@ -9,8 +9,8 @@ const Title = styled.span`
 `;
 
 const Artist = styled.span`
-  color: rgba(0, 0, 0, .6);
-  font-size: 0.8rem;
+  color: var(--secondary-color);
+  font-size: var(--size-80p);
   &:after {
     content: ' · ';
     ont-weight: bold;
@@ -18,8 +18,8 @@ const Artist = styled.span`
 `;
 
 const Album = styled.span`
-  color: rgba(0, 0, 0, .6);
-  font-size: 0.8rem;
+  color: var(--secondary-color);
+  font-size: var(--size-80p);
 `;
 
 function Track({
@@ -37,7 +37,7 @@ function Track({
 
   return (
     <div className={className}>
-      <div>
+      <div className="avatar">
         <Avatar src={album.picUrl} shape="square" />
       </div>
       <div>
@@ -73,12 +73,16 @@ export default styled(Track)`
   display: flex;
   align-items: center;
 
-  > div:nth-child(1) {
+  .avatar {
     font-size: 0;
+
+    &:hover {
+
+    }
   }
 
   > div:nth-child(2) {
-    margin-left: 1rem;
+    margin-left: var(--size-1);
     flex: 1;
   }
 `;
