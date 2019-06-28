@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-  state: {
+  initState: {
     account: null,
     bindings: null,
     profile: null,
@@ -32,7 +32,6 @@ export default {
     },
 
     isLoggedIn() {
-      console.log('isLoggedIn', state.profile);
       return state.profile !== null;
     },
 

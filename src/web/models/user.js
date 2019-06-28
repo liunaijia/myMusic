@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-  state: {
+  initState: {
     code: null,
     more: null,
     playlist: [],

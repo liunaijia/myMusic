@@ -1,14 +1,15 @@
 import axios from 'axios';
 
 export default {
-  state: {
-    playlist: {
-      tracks: [],
-    },
+  initState: {
+    // [id]: {
+    //   ...playlist
+    // }
   },
   reducers: {
     set(state, payload) {
-      return Object.assign({}, state, payload);
+      const { playlist } = payload;
+      return Object.assign({}, state, { [playlist.id]: playlist });
     },
   },
   effects: dispatch => ({
@@ -18,8 +19,11 @@ export default {
     },
   }),
   selectors: state => ({
-    tracks() {
-      return state.playlist.tracks;
+    tracks(playlistId) {
+      if (state[playlistId]) {
+        return state[playlistId].tracks;
+      }
+      return [];
     },
   }),
 };

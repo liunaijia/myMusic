@@ -1,14 +1,17 @@
 import { useReducer } from 'react';
 
-function useModel(model) {
-  const [reducerState, dispatch] = useReducer((state, action) => {
+function useModel(model, rootState, modelName) {
+  const [newState, dispatch] = useReducer((state, action) => {
     // it gets called twiced at the first time, because it returns a new function
     // console.log('useReducer');
     if (model.reducers.hasOwnProperty(action.type)) {
       return model.reducers[action.type](state, action.payload);
     }
     return state;
-  }, model.state);
+  }, model.initState);
+
+  // update root state with new state
+  Object.assign(rootState, { [modelName]: newState });
 
   const mapReducers = Object.entries(model.reducers)
     .reduce((memo, [reducerName]) => Object.assign(memo, {
@@ -22,11 +25,11 @@ function useModel(model) {
     }), {});
 
   return {
-    state: reducerState,
+    // state: reducerState,
 
     // extend dispatch function
     dispatch: Object.assign(dispatch, mapReducers, mapEffects),
-    selectors: model.selectors(reducerState),
+    selectors: model.selectors(newState),
   };
 }
 

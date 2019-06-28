@@ -13,7 +13,7 @@ function Playlist({ id, name, className }) {
     }
   }, [id]);
 
-  const tracks = playlist.selectors.tracks();
+  const tracks = playlist.selectors.tracks(id);
   return (
     <section className={className}>
       <h4>{name}</h4>
