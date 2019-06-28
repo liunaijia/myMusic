@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { StoreContext } from './context';
-import { Avatar, UserPlaylist } from './components';
+import { Avatar, UserPlaylist, Player } from './components';
 
 function Home() {
   const { login } = useContext(StoreContext);
@@ -16,6 +16,7 @@ function Home() {
       {profile.nickname}
       <Avatar src={profile.avatarUrl} />
       <UserPlaylist userId={profile.userId} />
+      <Player />
     </main>
   );
 }

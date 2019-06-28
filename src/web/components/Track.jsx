@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
-  number, string, shape, func,
+  number, string, shape,
 } from 'prop-types';
 import styled from 'styled-components';
 import Avatar from './Avatar';
 import Icon from './Icon';
+import { StoreContext } from '../context';
 
 const Title = styled.span`
   display: block;
@@ -26,24 +27,13 @@ const Album = styled.span`
 
 
 function Track({
-  id, name, artist, album, className, onPlay,
+  id, name, artist, album, className,
 }) {
-  // const { Track } = useContext(StoreContext);
-
-  // useEffect(() => {
-  //   if (id) {
-  //     Track.dispatch.getDetails(id);
-  //   }
-  // }, [id]);
-
-  // const tracks = Track.selectors.tracks();
+  const { player } = useContext(StoreContext);
 
   function handleAvatarClick() {
-    if (onPlay) {
-      onPlay({ target: { value: id } });
-    }
+    player.dispatch.play(id);
   }
-
 
   return (
     <div className={className}>
@@ -69,7 +59,6 @@ Track.propTypes = {
     name: string,
     picUrl: string,
   }),
-  onPlay: func,
 };
 
 Track.defaultProps = {
@@ -78,7 +67,6 @@ Track.defaultProps = {
   name: null,
   artist: null,
   album: {},
-  onPlay: null,
 };
 
 export default styled(Track)`

@@ -7,3 +7,4 @@ export { default as UserPlaylist } from './UserPlaylist';
 export { default as Playlist } from './Playlist';
 export { default as Track } from './Track';
 export { default as Icon } from './Icon';
+export { default as Player } from './Player';
