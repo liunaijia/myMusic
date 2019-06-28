@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Track } from './components';
+import { Avatar, Track, Icon } from './components';
 
 function Board() {
   return (
@@ -9,6 +9,9 @@ function Board() {
         <li style={{ color: 'var(--primary-color)' }}>Primary Color</li>
         <li style={{ color: 'var(--secondary-color)' }}>Secondary Color</li>
       </ul>
+
+      <h2>Icon Button</h2>
+      <Icon>play_arrow</Icon>
 
       <h2>Avatar</h2>
       <Avatar src="https://66.media.tumblr.com/78d9f5cc68beb1e6d49fc8a0bfa375ce/tumblr_pszj0804ub1qf8em3o3_1280.jpg" />

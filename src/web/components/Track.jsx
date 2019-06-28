@@ -1,8 +1,10 @@
-import React, { useEffect, useContext } from 'react';
-import { number, string, shape } from 'prop-types';
+import React from 'react';
+import {
+  number, string, shape, func,
+} from 'prop-types';
 import styled from 'styled-components';
 import Avatar from './Avatar';
-import { StoreContext } from '../context';
+import Icon from './Icon';
 
 const Title = styled.span`
   display: block;
@@ -22,8 +24,9 @@ const Album = styled.span`
   font-size: var(--size-80p);
 `;
 
+
 function Track({
-  id, name, artist, album, className,
+  id, name, artist, album, className, onPlay,
 }) {
   // const { Track } = useContext(StoreContext);
 
@@ -35,9 +38,17 @@ function Track({
 
   // const tracks = Track.selectors.tracks();
 
+  function handleAvatarClick() {
+    if (onPlay) {
+      onPlay({ target: { value: id } });
+    }
+  }
+
+
   return (
     <div className={className}>
-      <div className="avatar">
+      <div className="avatar" onClick={handleAvatarClick}>
+        <Icon className="icon" size={2}>play_arrow</Icon>
         <Avatar src={album.picUrl} shape="square" />
       </div>
       <div>
@@ -58,6 +69,7 @@ Track.propTypes = {
     name: string,
     picUrl: string,
   }),
+  onPlay: func,
 };
 
 Track.defaultProps = {
@@ -65,8 +77,8 @@ Track.defaultProps = {
   id: null,
   name: null,
   artist: null,
-  album: {
-  },
+  album: {},
+  onPlay: null,
 };
 
 export default styled(Track)`
@@ -74,10 +86,24 @@ export default styled(Track)`
   align-items: center;
 
   .avatar {
-    font-size: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    cursor: pointer;
+    position: relative;
+
+    .icon {
+      position: absolute;
+      display: none;      
+    }
 
     &:hover {
-
+      filter: brightness(60%);
+      .icon {
+        display: initial;
+        color: var(--primary-bg-color);
+      }
     }
   }
 
