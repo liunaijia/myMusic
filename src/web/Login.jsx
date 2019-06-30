@@ -1,21 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { bool, func } from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { StoreContext } from './context';
+import { connect } from 'react-redux';
 import { EmailInput, PasswordInput, Form } from './components';
 import useForm from './useForm';
 
-function Login() {
-  const { login } = useContext(StoreContext);
+function Login({ isLoggedIn, status, login }) {
   const [state, setState] = useState('show_form');
 
   useEffect(() => {
     (async () => {
-      if (login.selectors.hasSessionInCookie()) {
+      if (document.cookie) {
         try {
           setState('fetching_status');
-          await login.dispatch.status();
+          await status();
         } catch (_) {
-          // fail to fetch login status, need to login
+        // fail to fetch login status, need to login
           setState('show_form');
         }
       }
@@ -25,11 +25,11 @@ function Login() {
   const [formValue, handleFormChange] = useForm();
 
   async function handleSubmit() {
-    await login.dispatch.login(formValue.email, formValue.password);
+    await login(formValue);
   }
 
   // redirect to home page after log in
-  if (login.selectors.isLoggedIn()) {
+  if (isLoggedIn) {
     return (<Redirect to="/" />);
   }
 
@@ -49,4 +49,25 @@ function Login() {
   );
 }
 
-export default Login;
+Login.propTypes = {
+  isLoggedIn: bool,
+  status: func,
+  login: func,
+};
+
+Login.defaultProps = {
+  isLoggedIn: false,
+  status: null,
+  login: null,
+};
+
+const mapState = state => ({
+  isLoggedIn: !!state.login.profile,
+});
+
+const mapDispatch = ({ login: { status, login } }) => ({
+  status,
+  login,
+});
+
+export default connect(mapState, mapDispatch)(Login);

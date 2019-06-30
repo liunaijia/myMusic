@@ -6,7 +6,7 @@ function convertUrl(item) {
 }
 
 export default {
-  initState: {
+  state: {
     // [id]: {
     //   ...song
     // }

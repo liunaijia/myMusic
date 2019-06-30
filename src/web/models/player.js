@@ -1,5 +1,5 @@
 export default {
-  initState: null, // song id in play
+  state: null, // song id in play
   reducers: {
     set(state, payload) {
       return payload;

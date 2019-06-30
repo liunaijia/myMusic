@@ -1,42 +1,25 @@
 import axios from 'axios';
 
 export default {
-  initState: {
+  state: {
     account: null,
     bindings: null,
     profile: null,
   },
   reducers: {
-    // handle state changes with pure functions
-    // increment(state, payload) {
-    //   return state + payload;
-    // },
     set(state, payload) {
       return Object.assign({}, state, payload);
     },
   },
-  effects: dispatch => ({
-    async login(email, password) {
-      const response = await axios.post('/login', { email, password });
-      dispatch.set(response.data);
+  effects: () => ({
+    async login(payload) {
+      const response = await axios.post('/login', payload);
+      this.set(response.data);
     },
 
     async status() {
       const response = await axios.get('/login/status');
-      dispatch.set(response.data);
-    },
-  }),
-  selectors: state => ({
-    hasSessionInCookie() {
-      return document.cookie;
-    },
-
-    isLoggedIn() {
-      return state.profile !== null;
-    },
-
-    profile() {
-      return state.profile;
+      this.set(response.data);
     },
   }),
 };
