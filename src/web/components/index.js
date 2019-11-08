@@ -8,3 +8,6 @@ export { default as Playlist } from './Playlist';
 export { default as Track } from './Track';
 export { default as Icon } from './Icon';
 export { default as Player } from './Player';
+export { default as Typography } from './Typography';
+export { default as Box } from './Box';
+export { default as Grid } from './Grid';
