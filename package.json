@@ -35,7 +35,7 @@
     "@rematch/select": "^2.0.5",
     "NeteaseCloudMusicApi": "github:liunaijia/NeteaseCloudMusicApi#mine",
     "aws-sdk": "^2.567.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "node-id3": "^0.1.12",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
